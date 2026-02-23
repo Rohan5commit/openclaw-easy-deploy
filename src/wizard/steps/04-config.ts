@@ -8,6 +8,11 @@ function defaultPassword(): string {
   return randomBytes(12).toString('base64url');
 }
 
+function isValidPort(input: string | number): boolean {
+  const parsed = typeof input === 'number' ? input : Number.parseInt(input, 10);
+  return Number.isInteger(parsed) && parsed >= 1 && parsed <= 65535;
+}
+
 export async function configStep(state: WizardState): Promise<WizardState> {
   logger.step('Step 4/6: Generate configuration files');
 
@@ -31,13 +36,11 @@ export async function configStep(state: WizardState): Promise<WizardState> {
       name: 'appPort',
       message: 'Public port for OpenClaw:',
       default: '3000',
+      validate(input: string): boolean | string {
+        return isValidPort(input) ? true : 'Enter a valid port between 1 and 65535.';
+      },
       filter(input: string): number {
         return Number.parseInt(input, 10);
-      },
-      validate(input: number): boolean | string {
-        return Number.isInteger(input) && input >= 1 && input <= 65535
-          ? true
-          : 'Enter a valid port between 1 and 65535.';
       },
     },
     {

@@ -12,6 +12,11 @@ interface LocalCommandResult {
   stderr: string;
 }
 
+function isValidPort(input: string | number): boolean {
+  const parsed = typeof input === 'number' ? input : Number.parseInt(input, 10);
+  return Number.isInteger(parsed) && parsed > 0 && parsed <= 65535;
+}
+
 function runDockerComposeUp(cwd: string): Promise<LocalCommandResult> {
   return new Promise((resolve) => {
     const child = spawn('docker', ['compose', 'up', '-d'], {
@@ -179,11 +184,11 @@ async function deployVpsFlow(state: WizardState): Promise<DeploymentResult> {
       name: 'port',
       message: 'SSH port:',
       default: '22',
+      validate(input: string): boolean | string {
+        return isValidPort(input) ? true : 'Invalid port.';
+      },
       filter(input: string): number {
         return Number.parseInt(input, 10);
-      },
-      validate(input: number): boolean | string {
-        return Number.isInteger(input) && input > 0 && input <= 65535 ? true : 'Invalid port.';
       },
     },
     {
