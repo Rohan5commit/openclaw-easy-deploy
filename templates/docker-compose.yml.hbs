@@ -1,0 +1,20 @@
+version: '3.9'
+services:
+  openclaw:
+    image: {{openclawImage}}
+    container_name: openclaw
+    restart: unless-stopped
+    env_file:
+      - .env
+    ports:
+      - '{{appPort}}:3000'
+    healthcheck:
+      test: ['CMD', 'curl', '-f', 'http://localhost:3000/health']
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    volumes:
+      - openclaw_data:/app/data
+
+volumes:
+  openclaw_data:

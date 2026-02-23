@@ -1,0 +1,19 @@
+services:
+  - type: web
+    name: {{serviceName}}
+    runtime: docker
+    plan: starter
+    autoDeploy: true
+    envVars:
+      - key: SETUP_PASSWORD
+        value: {{setupPassword}}
+      - key: OPENCLAW_PORT
+        value: '{{appPort}}'
+      - key: OPENCLAW_LLM_PROVIDER
+        value: {{provider}}
+      - key: OPENAI_API_KEY
+        value: {{openaiApiKey}}
+      - key: ANTHROPIC_API_KEY
+        value: {{anthropicApiKey}}
+      - key: GEMINI_API_KEY
+        value: {{geminiApiKey}}
